@@ -1,39 +1,68 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
-import theme from './theme/theme';
+import mobileTheme from './theme/mobileTheme';
 import MainLayout from './components/layout/MainLayout';
-
-// Pages
+import Splash from './pages/Splash';
+import Login from './pages/Login';
 import Feed from './pages/Feed';
-import Profile from './pages/Profile';
-import Communities from './pages/Communities';
 import Classrooms from './pages/Classrooms';
+import Communities from './pages/Communities';
+import Profile from './pages/Profile';
 import ChatRoom from './pages/ChatRoom';
 
 const App: React.FC = () => {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={mobileTheme}>
       <Router>
-        <MainLayout>
-          <Routes>
-            {/* Redirect root to feed */}
-            <Route path="/" element={<Navigate to="/feed" replace />} />
-            
-            {/* Main routes */}
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/communities" element={<Communities />} />
-            <Route path="/classrooms" element={<Classrooms />} />
-            
-            {/* Chat routes */}
-            <Route path="/communities/:id" element={<ChatRoom type="community" />} />
-            <Route path="/classrooms/:id" element={<ChatRoom type="classroom" />} />
-            
-            {/* Fallback route */}
-            <Route path="*" element={<Navigate to="/feed" replace />} />
-          </Routes>
-        </MainLayout>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Splash />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected routes with MainLayout */}
+          <Route
+            path="/feed"
+            element={
+              <MainLayout>
+                <Feed />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/classrooms"
+            element={
+              <MainLayout>
+                <Classrooms />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/communities"
+            element={
+              <MainLayout>
+                <Communities />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <MainLayout>
+                <Profile />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/chat/:roomId"
+            element={
+              <MainLayout>
+                <ChatRoom type="group" />
+              </MainLayout>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </Router>
     </ThemeProvider>
   );
