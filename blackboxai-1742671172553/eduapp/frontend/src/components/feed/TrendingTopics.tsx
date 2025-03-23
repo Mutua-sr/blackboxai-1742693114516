@@ -1,72 +1,84 @@
 import React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
+import { 
+  Paper, 
+  Typography, 
+  List, 
+  ListItem, 
+  ListItemText, 
   ListItemIcon,
-  Chip,
+  Chip
 } from '@mui/material';
-import {
-  TrendingUp as TrendingIcon,
-  Tag as TagIcon,
-} from '@mui/icons-material';
+import { TrendingUp as TrendingIcon } from '@mui/icons-material';
 
 interface TrendingTopic {
   tag: string;
   count: number;
-  trending: boolean;
+  category: string;
 }
 
-interface TrendingTopicsProps {
-  topics: TrendingTopic[];
-  onTopicClick: (tag: string) => void;
-}
+const trendingTopics: TrendingTopic[] = [
+  { tag: 'React', count: 1234, category: 'Web Development' },
+  { tag: 'MachineLearning', count: 987, category: 'AI & Data Science' },
+  { tag: 'Python', count: 856, category: 'Programming' },
+  { tag: 'UIDesign', count: 743, category: 'Design' },
+  { tag: 'JavaScript', count: 654, category: 'Web Development' }
+];
 
-const TrendingTopics: React.FC<TrendingTopicsProps> = ({ topics, onTopicClick }) => {
+const TrendingTopics: React.FC = () => {
   return (
-    <Card sx={{ borderRadius: 2, mb: 2 }}>
-      <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <TrendingIcon color="primary" sx={{ mr: 1 }} />
-          <Typography variant="h6">Trending Topics</Typography>
-        </Box>
-        <List sx={{ p: 0 }}>
-          {topics.map((topic) => (
-            <ListItem
-              key={topic.tag}
-              sx={{
-                px: 0,
+    <Paper sx={{ p: 2 }}>
+      <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <TrendingIcon color="primary" />
+        Trending Topics
+      </Typography>
+
+      <List>
+        {trendingTopics.map((topic, index) => (
+          <ListItem 
+            key={topic.tag}
+            sx={{ 
+              px: 0,
+              '&:hover': {
+                backgroundColor: 'action.hover',
                 cursor: 'pointer',
-                '&:hover': {
-                  bgcolor: 'action.hover',
-                },
-              }}
-              onClick={() => onTopicClick(topic.tag)}
-            >
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <TagIcon color="action" fontSize="small" />
-              </ListItemIcon>
-              <ListItemText
-                primary={topic.tag}
-                secondary={`${topic.count} posts`}
-              />
-              {topic.trending && (
-                <Chip
-                  label="Trending"
-                  size="small"
-                  color="primary"
-                  sx={{ ml: 1 }}
-                />
-              )}
-            </ListItem>
-          ))}
-        </List>
-      </CardContent>
-    </Card>
+                borderRadius: 1
+              }
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 36 }}>
+              <Typography 
+                color="text.secondary" 
+                variant="body2"
+                sx={{ fontWeight: 500 }}
+              >
+                {index + 1}
+              </Typography>
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  #{topic.tag}
+                </Typography>
+              }
+              secondary={
+                <React.Fragment>
+                  <Typography variant="body2" color="text.secondary" component="span">
+                    {topic.count} posts
+                  </Typography>
+                  <Chip
+                    label={topic.category}
+                    size="small"
+                    sx={{ ml: 1 }}
+                    color="primary"
+                    variant="outlined"
+                  />
+                </React.Fragment>
+              }
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Paper>
   );
 };
 
