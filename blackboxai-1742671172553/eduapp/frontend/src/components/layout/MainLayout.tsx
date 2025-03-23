@@ -21,20 +21,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: isMobile ? 1.5 : 3,
-            pt: { xs: '64px', sm: '72px' }, // Adjusted top padding for navbar height
-            pb: { xs: '80px', sm: '88px' }, // Adjusted bottom padding for bottom nav height
-            backgroundColor: 'background.default',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            '& > *': {
-              maxWidth: '100%',
-            },
+            pt: { xs: '56px', sm: '64px' },
+            pb: { xs: '56px', sm: 0 },
+            overflow: 'auto'
           }}
         >
           {children}
         </Box>
-        <BottomNav />
+        {isMobile && <BottomNav />}
       </Box>
     </ThemeProvider>
   );
