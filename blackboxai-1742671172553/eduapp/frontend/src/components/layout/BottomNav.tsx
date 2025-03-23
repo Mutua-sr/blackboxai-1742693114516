@@ -1,58 +1,73 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  BottomNavigation,
-  BottomNavigationAction,
-  Paper,
-} from '@mui/material';
-import {
-  Forum as FeedIcon,
-  Group as GroupIcon,
+import { Paper, BottomNavigation, BottomNavigationAction } from '@mui/material';
+import { 
+  Home as HomeIcon,
   School as SchoolIcon,
-  Person as ProfileIcon,
+  People as PeopleIcon,
+  Person as PersonIcon 
 } from '@mui/icons-material';
-import { bottomNavStyles as styles } from '../../styles/layout/BottomNav.styles';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [value, setValue] = React.useState(location.pathname);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-    navigate(newValue);
+  const getCurrentValue = () => {
+    const path = location.pathname;
+    if (path.startsWith('/feed')) return 0;
+    if (path.startsWith('/classrooms')) return 1;
+    if (path.startsWith('/communities')) return 2;
+    if (path.startsWith('/profile')) return 3;
+    return 0;
   };
 
-  React.useEffect(() => {
-    setValue(location.pathname);
-  }, [location]);
-
   return (
-    <Paper sx={styles.container} elevation={3}>
+    <Paper 
+      sx={{ 
+        position: 'fixed', 
+        bottom: 0, 
+        left: 0, 
+        right: 0,
+        zIndex: 1000,
+        borderTop: '1px solid rgba(0, 0, 0, 0.12)'
+      }} 
+      elevation={3}
+    >
       <BottomNavigation
-        value={value}
-        onChange={handleChange}
-        sx={styles.navigation}
+        value={getCurrentValue()}
+        onChange={(_, newValue) => {
+          switch(newValue) {
+            case 0:
+              navigate('/feed');
+              break;
+            case 1:
+              navigate('/classrooms');
+              break;
+            case 2:
+              navigate('/communities');
+              break;
+            case 3:
+              navigate('/profile');
+              break;
+          }
+        }}
+        showLabels
       >
-        <BottomNavigationAction
-          label="Feed"
-          value="/"
-          icon={<FeedIcon />}
+        <BottomNavigationAction 
+          label="Feed" 
+          icon={<HomeIcon />} 
         />
-        <BottomNavigationAction
-          label="Communities"
-          value="/communities"
-          icon={<GroupIcon />}
+        <BottomNavigationAction 
+          label="Classrooms" 
+          icon={<SchoolIcon />} 
         />
-        <BottomNavigationAction
-          label="Classes"
-          value="/classrooms"
-          icon={<SchoolIcon />}
+        <BottomNavigationAction 
+          label="Communities" 
+          icon={<PeopleIcon />} 
         />
-        <BottomNavigationAction
-          label="Profile"
-          value="/profile"
-          icon={<ProfileIcon />}
+        <BottomNavigationAction 
+          label="Profile" 
+          icon={<PersonIcon />} 
         />
       </BottomNavigation>
     </Paper>
