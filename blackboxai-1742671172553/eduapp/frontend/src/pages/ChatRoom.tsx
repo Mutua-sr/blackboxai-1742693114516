@@ -1,153 +1,38 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Drawer, useTheme, useMediaQuery, IconButton } from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
-import ChatInterface from '../components/chat/ChatInterface';
-import VideoCall from '../components/video/VideoCall';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
 interface ChatRoomProps {
-  type: 'community' | 'classroom';
+  type: 'direct' | 'group';
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ type }) => {
-  const { id } = useParams<{ id: string }>();
-  // Use id for future API calls and room identification
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
-  const [isVideoActive, setIsVideoActive] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(!isVideoActive);
-
-  // Mock participants for video call
-  const participants = [
-    {
-      id: '1',
-      name: 'You',
-      avatar: 'https://source.unsplash.com/random/200x200/?person=1',
-      isSpeaking: true,
-      isVideoOn: true,
-      isAudioOn: true,
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      avatar: 'https://source.unsplash.com/random/200x200/?person=2',
-      isSpeaking: false,
-      isVideoOn: true,
-      isAudioOn: false,
-    },
-    {
-      id: '3',
-      name: 'John Doe',
-      avatar: 'https://source.unsplash.com/random/200x200/?person=3',
-      isSpeaking: false,
-      isVideoOn: true,
-      isAudioOn: true,
-    },
-  ];
-
-  const handleStartVideoCall = () => {
-    setIsVideoActive(true);
-    if (isMobile) {
-      setIsChatOpen(false);
-    }
-  };
-
-  const handleEndVideoCall = () => {
-    setIsVideoActive(false);
-    setIsChatOpen(true);
-  };
-
-  const handleToggleChat = () => {
-    setIsChatOpen(!isChatOpen);
-  };
-
-  const handleBack = () => {
-    navigate(type === 'community' ? '/communities' : '/classrooms');
-  };
-
-  // Get room details based on type and id
-  const getRoomDetails = () => {
-    if (type === 'classroom') {
-      return {
-        title: 'Data Structures & Algorithms',
-        subtitle: 'Dr. Sarah Johnson • 25 students',
-        avatar: 'https://source.unsplash.com/random/200x200/?algorithm',
-      };
-    } else {
-      return {
-        title: 'Computer Science Hub',
-        subtitle: '150 members',
-        avatar: 'https://source.unsplash.com/random/200x200/?computer',
-      };
-    }
-  };
-
-  const roomDetails = getRoomDetails();
+  const { roomId } = useParams();
 
   return (
-    <Box sx={{ 
-      height: '100vh', 
-      display: 'flex',
-      bgcolor: isVideoActive ? 'grey.900' : 'background.default',
-      position: 'relative'
-    }}>
-      {isMobile && (
-        <IconButton
-          onClick={handleBack}
-          sx={{
-            position: 'absolute',
-            top: theme.spacing(1),
-            left: theme.spacing(1),
-            zIndex: 1200,
-            color: isVideoActive ? 'white' : 'inherit',
-          }}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-      )}
-
-      {/* Video Call Section */}
-      {isVideoActive && (
-        <Box sx={{ 
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
-          <VideoCall
-            participants={participants}
-            onEndCall={handleEndVideoCall}
-            onToggleChat={handleToggleChat}
-          />
-        </Box>
-      )}
+    <div className="flex flex-col h-screen bg-gray-100">
+      <div className="bg-white shadow-sm p-4">
+        <h1 className="text-xl font-semibold">
+          {type === 'direct' ? 'Direct Message' : 'Group Chat'}
+        </h1>
+      </div>
       
-      {/* Chat Section */}
-      <Drawer
-        variant={isMobile ? 'temporary' : 'permanent'}
-        anchor={isMobile ? 'right' : 'right'}
-        open={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        sx={{
-          width: isVideoActive ? { xs: '100%', sm: '400px' } : '100%',
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: isVideoActive ? { xs: '100%', sm: '400px' } : '100%',
-            boxSizing: 'border-box',
-          },
-        }}
-      >
-        <ChatInterface
-          title={roomDetails.title}
-          subtitle={roomDetails.subtitle}
-          avatar={roomDetails.avatar}
-          isLive={isVideoActive}
-          onStartVideoCall={handleStartVideoCall}
-          onStartVoiceCall={() => console.log('Voice call started')}
-        />
-      </Drawer>
-    </Box>
+      <div className="flex-1 overflow-y-auto p-4">
+        {/* Chat messages will go here */}
+      </div>
+
+      <div className="bg-white p-4 border-t">
+        <div className="flex space-x-2">
+          <input
+            type="text"
+            placeholder="Type a message..."
+            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
